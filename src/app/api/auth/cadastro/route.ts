@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/admin';
 import { z } from 'zod';
 
 const CURSOS_MAPA: Record<string, string> = {
+  ADM: '7ecd4089-52f7-48b1-8b03-392fe4a0def4',
   BIO: 'd1a5cdae-a35a-43ff-956b-08b51438a8b9',
   GEO: '6031bdbf-d4dd-4c76-8817-204197177858',
   HIS: '7f1d3356-4a16-419c-a7df-ef65277c849f',
@@ -44,7 +45,14 @@ export async function POST(request: Request) {
 
     const supabaseAdmin = getSupabaseAdmin();
 
-    const cursoId = CURSOS_MAPA[dados.cursoSigla.toUpperCase()];
+    const siglaUpper = dados.cursoSigla.toUpperCase();
+    const { data: cursoRow } = await supabaseAdmin
+      .from('cursos')
+      .select('id')
+      .eq('sigla', siglaUpper)
+      .maybeSingle();
+
+    const cursoId = cursoRow?.id || CURSOS_MAPA[siglaUpper];
     if (!cursoId) {
       return NextResponse.json(
         { error: 'Curso institucional não encontrado na base de dados.' },

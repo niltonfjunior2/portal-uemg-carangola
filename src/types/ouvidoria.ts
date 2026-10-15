@@ -100,10 +100,24 @@ export interface HomologacaoMuralInput {
   dataManifestacao: string;
 }
 
+export type AcaoDespacho =
+  | 'analise_assessoria'
+  | 'analise_diretoria'
+  | 'responder_privado'
+  | 'homologar_mural';
+
+export const MAPA_ACAO_STATUS: Record<AcaoDespacho, StatusProtocolo> = {
+  analise_assessoria: 'em_analise_assessoria',
+  analise_diretoria: 'em_analise_diretoria',
+  responder_privado: 'respondido_privado',
+  homologar_mural: 'homologado_publico',
+} as const;
+
 export interface DespachoDirecaoInput {
   protocoloId: string;
-  acao: 'analise_assessoria' | 'analise_diretoria' | 'responder_privado' | 'homologar_mural';
+  acao: AcaoDespacho;
   despachoOficial: string;
   numeroPortaria?: string;
   resumoSanitizadoMural?: string;
 }
+

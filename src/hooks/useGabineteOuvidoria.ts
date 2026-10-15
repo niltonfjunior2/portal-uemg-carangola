@@ -6,6 +6,7 @@ import {
   DespachoDirecaoInput,
   PayloadCifradoEnvelope,
   StatusProtocolo,
+  MAPA_ACAO_STATUS,
 } from '@/types/ouvidoria';
 import {
   obterProtocolosArmazenados,
@@ -138,12 +139,7 @@ export function useGabineteOuvidoria(): UseGabineteOuvidoriaReturn {
       );
 
       const codigoProto = protocoloAlvo?.codigoProtocolo || dados.protocoloId;
-
-      let novoStatus: StatusProtocolo = 'pendente';
-      if (dados.acao === 'analise_assessoria') novoStatus = 'em_analise_assessoria';
-      else if (dados.acao === 'analise_diretoria') novoStatus = 'em_analise_diretoria';
-      else if (dados.acao === 'responder_privado') novoStatus = 'respondido_privado';
-      else if (dados.acao === 'homologar_mural') novoStatus = 'homologado_publico';
+      const novoStatus: StatusProtocolo = MAPA_ACAO_STATUS[dados.acao] || 'pendente';
 
       // 2. Persistência remota prioritária via API do Servidor (Service Role / Supabase)
       try {
